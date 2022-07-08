@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import classes from './MeetUpDetail.module.css';
 
 function MeetUpDetail(props) {
@@ -12,3 +14,5 @@ function MeetUpDetail(props) {
     </Fragment>
   );
 }
+
+export default MeetUpDetail;
