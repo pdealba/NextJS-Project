@@ -1,3 +1,4 @@
+import { MongoClient, ObjectId } from "mongodb";
 import MeetUpDetail from "../../components/meetups/MeetUpDetail";
 
 function MeetUpDetails(props) {
@@ -13,24 +14,50 @@ function MeetUpDetails(props) {
 
 export async function getStaticProps(context) {
   const meetupId = context.params.meetupId;
+
+  const client = await MongoClient.connect(
+    "mongodb+srv://pedroDeAlba123:U6BNG35ODtxA71jz://pedroDeAlba123:U6BNG35ODtxA71jz@cluster0.zfzxf.mongodb.net/?retryWrites=true&w=majority@cluster0.zfzxf.mongodb.net/?retryWrites=true&w=majority"
+  );
+  const db = cliend.db();
+
+  const meetupsCollection = db.collection("meetups");
+
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
+  });
+
+  client.close();
+
   return {
     props: {
       meetupData: {
-        id: meetupId,
-        image:
-          "http://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQSHvLcENpud6w789of2qwPmGK5dHtRuDt-YmlcdNd3KCdnhUFmYK8_wQ1iIkkHU02v",
-        title: "A First Meetup",
-        adress: "Some Street 5, some city",
-        description: "Meetup description",
+        id: selectedMeetup._id.toString,
+        title: selectedMeetup.title,
+        adress: selectedMeetup.adress,
+        image: selectedMeetup.image,
+        description: selectedMeetup.description,
       },
     },
   };
 }
 
 export async function getStaticPaths() {
+  const client = await MongoClient.connect(
+    "mongodb+srv://pedroDeAlba123:U6BNG35ODtxA71jz://pedroDeAlba123:U6BNG35ODtxA71jz@cluster0.zfzxf.mongodb.net/?retryWrites=true&w=majority@cluster0.zfzxf.mongodb.net/?retryWrites=true&w=majority"
+  );
+  const db = cliend.db();
+
+  const meetupsCollection = db.collection("meetups");
+
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
+  client.close();
+
   return {
     fallback: false,
-    paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
+    paths: meetups.map((meetups) => ({
+      params: { meetupId: meetups._id.toString() },
+    })),
   };
 }
 
