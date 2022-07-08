@@ -1,14 +1,23 @@
 import { MongoClient, ObjectId } from "mongodb";
+import { Fragment } from "react";
+import Head from 'next/head'
+
 import MeetUpDetail from "../../components/meetups/MeetUpDetail";
 
 function MeetUpDetails(props) {
   return (
+    <Fragment>
+      <Head>
+        <title>{props.meetupData.title}</title>
+        <meta name="description" content={props.meetupData.description}/>
+      </Head>
     <MeetUpDetail
       image={props.meetupData.image}
       title={props.meetupData.title}
       adress={props.meetupData.adress}
       description={props.meetupData.description}
     />
+    </Fragment>
   );
 }
 
